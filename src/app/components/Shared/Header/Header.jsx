@@ -30,7 +30,7 @@ function Header(props) {
               <Link className='mx-5 text-[20px] text-white font-semibold' href="/home">Home</Link>
               <Link className='mx-5 text-[20px] text-white font-semibold' href="/home">Shop</Link>
               <Link className='mx-5 text-[20px] text-white font-semibold' href="/home"><h1 className='font-semibold'><CiShoppingCart></CiShoppingCart></h1></Link>
-              <Link className='mx-5 text-[20px] text-white font-semibold' href="/home">login</Link>
+              <Link className='mx-5 text-[20px] text-white font-semibold' href="/login">login</Link>
             </ul>
           </div>
           <div className="drawer block lg:hidden bg-green-600  xl:hidden drawer-end">
@@ -50,7 +50,7 @@ function Header(props) {
       <Link className='mx-5 text-[20px] text-white ' href="/home">Home</Link> <br />
               <Link className='mx-5 text-[20px] text-white ' href="/home">Shop</Link><br />
               <Link className='mx-5 text-[20px] text-white ' href="/home">wishlist</Link><br />
-              <Link className='mx-5 text-[20px] text-white ' href="/home">login</Link><br />
+              <Link className='mx-5 text-[20px] text-white ' href="/login">login</Link><br />
     </ul>
   </div>
 </div>
