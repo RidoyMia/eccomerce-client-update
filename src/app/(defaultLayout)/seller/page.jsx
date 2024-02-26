@@ -1,12 +1,22 @@
 "use client"
+import { authContext } from '@/app/components/AuthProvider/AuthProvider';
+import Loader from '@/app/components/Loader/Loader';
+import { useSignInUserMutation } from '@/app/components/redux/Api/UserApi';
 import axios from 'axios';
 import Link from 'next/link';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useContext, useState } from 'react';
 import { useForm } from "react-hook-form"
+import toast, { Toaster } from 'react-hot-toast';
 
 function page(props) {
+    const router = useRouter()
+    const {createUser,profileUpdate} = useContext(authContext);
+    const [loading,setLoading] = useState(false)
+    const [signInUser,{isLoading,isError}] = useSignInUserMutation()
     const { register, handleSubmit, watch, formState: { errors }, } = useForm()
     const onSubmit = (data) => {
+        setLoading(true)
         const image = data.image[0]
         const formData = new FormData()
         
@@ -24,15 +34,41 @@ function page(props) {
                 const confirm = data?.confirm;
                 const phone = data?.phone;
                 const village = data?.village;
-                const img = res?.data?.data?.url;
-                console.log(name,email,district,sub_district,password,confirm,phone,village,img)
+                const image = res?.data?.data?.url;
+                const sellerInfo ={name,email,district,sub_district,phone,village,image,role:'seller'}
+                console.log(sellerInfo,'seller to static')
+                createUser(email,password).then(res => {
+                    if(res){
+                        profileUpdate(name, image).then(res => {
+                         
+                           
+                            signInUser(sellerInfo).then(res => {
+                               console.log(res?.data,'reesult')
+                               
+                                localStorage.setItem('userInfo', JSON.stringify(res?.data?.result))
+                                const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+                                router.push(`/dashboard/${userInfo?.role}`)
+                            });
+
+                            setLoading(false)
+                        }).catch(e => {
+
+                        })
+                    }
+                }).catch(e=>{
+                    toast.error('Something went wrong try by onother email ')
+                })
             }
          })
        
         
     }
+    if(loading){
+        return <Loader></Loader>
+    }
     return (
         <div>
+            <Toaster></Toaster>
             <div className='grid grid-cols-1 lg:grid-cols-3 md:grid-cols-3'>
                 <div></div>
                 <div className='shadow-lg p-5 lg:p-10 md:p-7'>

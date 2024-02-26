@@ -1,5 +1,5 @@
 "use client"
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { TbLayoutNavbar } from "react-icons/tb";
 import logo from "../../../../images/Group 36.png"
 import Image from 'next/image';
@@ -7,8 +7,28 @@ import { CiSearch } from "react-icons/ci";
 import Link from 'next/link';
 import css from "./Header.css"
 import { CiShoppingCart } from "react-icons/ci";
+import { authContext } from '../../AuthProvider/AuthProvider';
+import { useRouter } from 'next/navigation';
+import { useGetSingleUserQuery } from '../../redux/Api/UserApi';
+
 function Header(props) {
+const router = useRouter()
+  const {user,LogOut} = useContext(authContext);
   
+  const {data,isLoading,isError} = useGetSingleUserQuery(user?.email)
+
+
+
+
+  const logout = ()=>{
+    
+    LogOut().then(res =>{
+            localStorage.removeItem('userInfo')
+            Router.pust('/ami')
+     }).catch(e=>{
+      
+     })
+  }
   return (
     <div className='bg-green-600 py-3'>
      
@@ -30,7 +50,28 @@ function Header(props) {
               <Link className='mx-5 text-[20px] text-white font-semibold' href="/home">Home</Link>
               <Link className='mx-5 text-[20px] text-white font-semibold' href="/home">Shop</Link>
               <Link className='mx-5 text-[20px] text-white font-semibold' href="/home"><h1 className='font-semibold'><CiShoppingCart></CiShoppingCart></h1></Link>
-              <Link className='mx-5 text-[20px] text-white font-semibold' href="/login">login</Link>
+              {
+                 data?.result[0]?.role? <Link className='mx-5 text-[20px] text-white font-semibold' href={`/${data?.result[0]?.role}`}>Dashboard</Link> : <Link className='mx-5 text-[20px] text-white font-semibold' href="/login">login</Link>
+              }
+              {
+                 data?.result[0]?.role? <div className="dropdown dropdown-end">
+                 <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+                   <div className="w-10 rounded-full">
+                     <img alt="Tailwind CSS Navbar component" src={data?.result[0]?.image} />
+                   </div>
+                 </div>
+                 <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                   <li>
+                     <a className="justify-between">
+                       Profile
+                       <span className="badge">New</span>
+                     </a>
+                   </li>
+                   <li><a>Settings</a></li>
+                   <li onClick={logout}><a>Logout</a></li>
+                 </ul>
+               </div>:''
+              }
             </ul>
           </div>
           <div className="drawer block lg:hidden bg-green-600  xl:hidden drawer-end">
@@ -41,7 +82,7 @@ function Header(props) {
   </div> 
   <div className="drawer-side ">
     <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
-    <ul className="menu p-4 w-64 min-h-full bg-green-600 text-base-content py-4">
+    <ul className="menu p-4 w-80 min-h-full bg-green-600 text-base-content py-4">
     <div className='pb-4 flex justify-center items-center align-middle'>
           <Image src={logo} height={120} width={120} ></Image>
         </div>
@@ -50,7 +91,31 @@ function Header(props) {
       <Link className='mx-5 text-[20px] text-white ' href="/home">Home</Link> <br />
               <Link className='mx-5 text-[20px] text-white ' href="/home">Shop</Link><br />
               <Link className='mx-5 text-[20px] text-white ' href="/home">wishlist</Link><br />
-              <Link className='mx-5 text-[20px] text-white ' href="/login">login</Link><br />
+              {
+                 data?.result[0]?.role? <Link className='mx-5 text-[20px] text-white font-semibold' href={`/${data?.result[0]?.role}`}>Dashboard</Link> : <Link className='mx-5 text-[20px] text-white font-semibold' href="/login">login</Link>
+              }
+              {
+                 data?.result[0]?.role? <div className="dropdown dropdown-end">
+                 <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+                   <div className="w-10 rounded-full">
+                     <img alt="Tailwind CSS Navbar component" src={data?.result[0]?.image} />
+                   </div>
+                 </div>
+                 <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                   <li>
+                     <a className="justify-between">
+                       Profile
+                       <span className="badge">New</span>
+                     </a>
+                   </li>
+                   <li><a>Settings</a></li>
+                   <li><button onClick={logout}>LogOut</button></li>
+                   {
+                 data?.result[0]?.role? <Link className=' ml-3 mt-1 text-[14px] text-black ' href={`/${data?.result[0]?.role}`}>Dashboard</Link> : <Link className='mx-5 text-[20px] text-white font-semibold' href="/login">login</Link>
+              }
+                 </ul>
+               </div>:''
+              }
     </ul>
   </div>
 </div>
